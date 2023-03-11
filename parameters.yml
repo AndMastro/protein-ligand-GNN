@@ -1,0 +1,51 @@
+trainer:
+  DATA_PATH: "data/" #data location
+  SAVE_BEST_MODEL: True
+  MODEL_SAVE_FOLDER: "models" 
+  HIDDEN_CHANNELS: 256
+  BATCH_SIZE: 32
+  EPOCHS: 100
+  SEED: 42
+  CLEAN_DATA: True
+  MIN_AFFINITY: 5
+  MAX_AFFINITY: 11
+  MEAN_LOWER_BOUND: 6.5
+  MEAN_UPPER_BOUND: 7.5
+  LOW_BOUND: 6
+  HIGH_BOUND: 8
+  GNN_MODEL: "GC_GNN" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
+  EDGE_WEIGHT: True
+  SCALING: True
+  SEED: 42
+  HIDDEN_CHANNELS: 256
+  EPOCHS: 100
+  LEARNING_RATE: 1e-3
+  WEIGHT_DECAY: 5e-4
+  NODE_FEATURES: True
+
+explainer:
+  DATA_PATH: "data/" #data location
+  SAVE_FOLDER: 'results/explanations/' #folder where explanations will be saved
+  MODEL_PATH: 'models/pretrained_models/model_GC_GNN_best_89.ckpt' #model to use for the explanation phase
+  GNN_MODEL: "GC_GNN" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
+  SAMPLES_TO_EXPLAIN: 20 #number of test samples to explain
+  AFFINITY_SET: "low" #affinity set for which to perform the explanations (low, medium, high)
+  HIDDEN_CHANNELS: 256
+  BATCH_SIZE: 32
+  EPOCHS: 100
+  SEED: 42
+  CLEAN_DATA: True
+  MIN_AFFINITY: 5
+  MAX_AFFINITY: 11
+  MEAN_LOWER_BOUND: 6.5
+  MEAN_UPPER_BOUND: 7.5
+  LOW_BOUND: 6
+  HIGH_BOUND: 8
+  EDGE_WEIGHT: True
+  SCALING: True
+  SEED: 42
+  HIDDEN_CHANNELS: 256
+  EPOCHS: 100
+  LEARNING_RATE: 1e-3
+  WEIGHT_DECAY: 5e-4
+  NODE_FEATURES: True
