@@ -54,4 +54,4 @@ to generate statistics and plots for the top-k important edges of the samples ex
 
 ### Contacts
 
-For any questions, feel free to drop an [email](mailto: mastropietro@diag.uniroma1.it)
+For any questions, feel free to drop an [email](mailto:mastropietro@diag.uniroma1.it).
