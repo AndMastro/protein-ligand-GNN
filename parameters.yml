@@ -52,7 +52,6 @@ explainer:
 
 top_k_computation:
   DATA_PATH: "data/" #data location
-  SAVE_FOLDER: 'results/explanations/' #folder where top-k edges statistics will be saved
   PLOT: True #if to save top_k graph images
   EXPLANATIONS_FOLDER: "results/explanations/GIN/" #folder where the explanations computed with explainer_script-py are
   TOP_K_VALUES: [5,10,15,20,25] #values for the top-k edges computation

@@ -24,7 +24,7 @@ with open("parameters.yml") as paramFile:
         args = yaml.load(paramFile, Loader=yaml.FullLoader)
 
 DATA_PATH = args["top_k_computation"]["DATA_PATH"]
-SAVE_FOLDER = args["top_k_computation"]["SAVE_FOLDER"]
+
 PLOT = args["top_k_computation"]["PLOT"]
 EXPLANATIONS_FOLDER = args["top_k_computation"]["EXPLANATIONS_FOLDER"]
 
