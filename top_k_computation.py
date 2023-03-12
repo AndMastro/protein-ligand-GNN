@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
+### Module implementing top-k edges computation phase ###
+### Author: Andrea Mastropietro © All rights reserved ###
 
 
 import os
@@ -314,21 +312,21 @@ for affinity_group in AFFINITY_GROUPS:
                     
                 else:
                     f.write("Number of relevant edges connecting protein pseudo-atoms: " + str(num_edge_in_protein) + "\n")
-                    f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_protein/num_total_top_abs_edges)*100, 1)) + "%)\n")
+                    f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_protein/num_total_top_abs_edges)*100, 1)) + "%\n")
                     
                 if num_total_edge_in_ligand == 0:
                     f.write("Number of relevant edges connecting ligand pseudo-atoms: 0\n")
                     
                 else:
                     f.write("Number of relevant edges connecting ligand pseudo-atoms: " + str(num_edge_in_ligand) + "\n")
-                    f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_ligand/num_total_top_abs_edges)*100, 1)) + "%)\n")
+                    f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_ligand/num_total_top_abs_edges)*100, 1)) + "%\n")
                     
                 if num_total_edge_in_between == 0:
                     f.write("Number of relevant edges connecting protein and ligand pseudo-atoms: 0\n")
                     
                 else:
                     f.write("Number of relevant edges connecting protein and ligand pseudo-atoms: " + str(num_edge_in_between) + "\n")
-                    f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_between/num_total_top_abs_edges)*100, 1)) + "%)\n\n")
+                    f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_between/num_total_top_abs_edges)*100, 1)) + "%\n\n")
                     
         
                 num_relevant_edge_in_protein_list[top_k_t].append(num_edge_in_protein)

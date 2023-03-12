@@ -1,3 +1,6 @@
+### Module implementing explanation phase ###
+### Author: Andrea Mastropietro © All rights reserved ###
+
 import os
 from tqdm import tqdm
 import json
@@ -14,8 +17,6 @@ from sklearn.preprocessing import RobustScaler, MinMaxScaler
 import json
 import networkx as nx
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 from src.utils import create_edge_index, PLIDataset, set_all_seeds, GCN, GraphSAGE, GAT, GIN, GINE, GC_GNN
 from src.edgeshaper import Edgeshaper
@@ -43,6 +44,8 @@ MODEL_NAME = args["explainer"]["GNN_MODEL"]
 GNN = GCN if MODEL_NAME == "GCN" else GraphSAGE if MODEL_NAME == "GraphSAGE" else GAT if MODEL_NAME == "GAT" else GIN if MODEL_NAME == "GIN" else GINE if MODEL_NAME == "GINE" else GC_GNN if MODEL_NAME == "GC_GNN" else None
 MODEL_PATH = args["explainer"]["MODEL_PATH"]
 
+print("Using model: ", MODEL_NAME)
+
 EDGE_WEIGHT = args["explainer"]["EDGE_WEIGHT"]
 SCALING = args["explainer"]["SCALING"]
 BATCH_SIZE = args["explainer"]["BATCH_SIZE"]
@@ -54,6 +57,10 @@ HIDDEN_CHANNELS = args["explainer"]["HIDDEN_CHANNELS"]
 EPOCHS = args["explainer"]["EPOCHS"]
 NODE_FEATURES = args["explainer"]["NODE_FEATURES"] #if False, use dummy features (1)
 AFFINITY_SET = args["explainer"]["AFFINITY_SET"] 
+
+assert(AFFINITY_SET == "low" or AFFINITY_SET == "high" or AFFINITY_SET == "medium")
+
+print("Explaining affinity set: ", AFFINITY_SET)
 
 SAMPLES_TO_EXPLAIN = args["explainer"]["SAMPLES_TO_EXPLAIN"]
 
@@ -231,21 +238,21 @@ epochs = EPOCHS
 def train():
         model.train()
 
-        for data in train_loader:  # Iterate in batches over the training dataset.
+        for data in train_loader:  
             data = data.to(device)
-            out = model(data.x, data.edge_index, data.batch, edge_weight = data.edge_weight)  # Perform a single forward pass.
+            out = model(data.x, data.edge_index, data.batch, edge_weight = data.edge_weight)  
             
-            loss = torch.sqrt(criterion(torch.squeeze(out), data.y))  # Compute the loss.
+            loss = torch.sqrt(criterion(torch.squeeze(out), data.y))  
         
-            loss.backward()  # Derive gradients.
-            optimizer.step()  # Update parameters based on gradients.
-            optimizer.zero_grad()  # Clear gradients.
+            loss.backward()  
+            optimizer.step()  
+            optimizer.zero_grad()  
 
 def test(loader):
     model.eval()
 
     sum_loss = 0
-    for data in loader:  # Iterate in batches over the training/test dataset.
+    for data in loader: 
         data = data.to(device)
         
         out = model(data.x, data.edge_index, data.batch, edge_weight = data.edge_weight)  
@@ -306,8 +313,6 @@ fidelity_score_list = []
 infidelity_score_list = []
 trustworthiness_score_list = []
 
-print("Test interactions: ", all_test_interaction_indices)
-
 test_interaction_indices = []
 num_test_interactions = SAMPLES_TO_EXPLAIN
 probability_threshold = 0.75
@@ -358,9 +363,6 @@ for test_interaction_index in all_test_interaction_indices:
     if len(test_interaction_indices) == num_test_interactions:
         break
 
-print("Selected test interactions: ", test_interaction_indices)
-print("Selected test interaction names: ", test_interaction_names)
-print("Selected test inteactions affinities: ", test_interactions_affinities)
 
 TARGET_CLASS = None
 
@@ -368,7 +370,7 @@ TARGET_CLASS = None
 for index in tqdm(test_interaction_indices):
     model.eval()
     test_interaction = hold_out_data[index]
-    print("Interaction: " + test_interaction.interaction_name)
+    print("\nInteraction: " + test_interaction.interaction_name)
 
     edge_weight_to_pass = None
     if EDGE_WEIGHT:
@@ -378,7 +380,7 @@ for index in tqdm(test_interaction_indices):
     
     
     out = model(test_interaction.x.to(device), test_interaction.edge_index.to(device), batch=batch.to(device), edge_weight=edge_weight_to_pass) #test_interaction.edge_weight.to(device)
-    print(f"Predicted: {out.item()} Actual: {test_interaction.y.item()}")
+    
     
     #explainability
 
@@ -413,15 +415,7 @@ for index in tqdm(test_interaction_indices):
             rdkit_bonds_phi[bond_index] += phi_value
 
     
-    # print(rdkit_bonds_phi)
-
-    # G = test_interaction.networkx_graph
-
-    # colors = ["red" if G.nodes[node]["origin"] == "L" else "lightblue" for node in G.nodes]
-
-    # plt.figure(figsize=(10,10))
-    # pos = nx.spring_layout(G)
-    # nx.draw(G, pos=pos, with_labels=True, font_weight='bold', labels=nx.get_node_attributes(G, 'atom_type'), node_color=colors,edge_color=rdkit_bonds_phi, width=3, edge_cmap=plt.cm.bwr)
+    
 
     SAVE_PATH = SAVE_FOLDER + "/" + MODEL_NAME + "/" + AFFINITY_SET + " affinity" + "/" + test_interaction.interaction_name + "/"
     
@@ -433,7 +427,7 @@ for index in tqdm(test_interaction_indices):
     with open(SAVE_PATH + test_interaction.interaction_name + "_statistics.txt", "w+") as f:
         f.write("Interaction name: " + test_interaction.interaction_name + "\n\n")
         f.write("Affinity: " + str(test_interaction.y.item()) + "\n")
-        f.write("Predicted value: " + str(out.item()) + "\n")
+        f.write("Predicted value: " + str(out.item()) + "\n\n")
 
 
         f.write("Shapley values for edges: \n\n")

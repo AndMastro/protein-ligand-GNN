@@ -1,3 +1,6 @@
+### Module implementing training phase ###
+### Author: Andrea Mastropietro © All rights reserved ###
+
 import os
 from tqdm import tqdm
 import json

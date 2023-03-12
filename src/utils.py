@@ -1,3 +1,6 @@
+### Module implementing utiles functions ###
+### Author: Andrea Mastropietro © All rights reserved ###
+
 import torch
 import numpy as np
 import random
