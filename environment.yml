@@ -204,7 +204,6 @@ dependencies:
   - pip:
     - pbr==5.8.0
     - pysmiles==1.0.1
-    - rdkit-heatmap==0.1
     - torch-cluster==1.6.0
     - torch-geometric==2.1.0.post1
     - torch-sparse==0.6.15
