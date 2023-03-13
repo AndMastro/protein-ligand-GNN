@@ -2,7 +2,7 @@
 
 # Predicting affinities from simplistic protein-ligand interaction representations – what do graph neural networks learn?
 
-This repository contains the code for the work on protein ligand interaction with GNNs, in which we investigate what GNNs learn by using explainable AI (XAI).
+This repository contains the code for the work on protein-ligand interaction with GNNs, in which we investigate what GNNs learn by using explainable AI (XAI).
 
 ## Before you start
 This code relies on the usage of [EdgeSHAPer](https://github.com/AndMastro/EdgeSHAPer) as an XAI method. However, there is no need to install it since all the files needed are provided in the ```src``` folder.
@@ -50,7 +50,13 @@ Once the explanations for all the affinity sets are obtained, it is possible to 
 python top_k_computation.py
 ```
 
-to generate statistics and plots for the top-k important edges of the samples explained. Additional parameters accepted can be found in the config file ```parameters.yml```
+to generate statistics and graphics for the top-k important edges of the samples explained. Additional parameters accepted can be found in the config file ```parameters.yml```.
+
+A possible top-k edges (k=25) output image may look as:
+
+<p align="center">
+  <img src="results/explanations/GC_GNN/high affinity/5lwe/5lwe_EdgeSHAPer_top_25_edges_full_graph.png" alt="top-k edges for an example complex" width=45%>
+</p>
 
 ### Contacts
 
