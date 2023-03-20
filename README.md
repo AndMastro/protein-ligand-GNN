@@ -13,7 +13,7 @@ We suggest to run the code in a conda environment. We provide an ```environment.
 conda env create -f environment.yml
 ```
 
-Note: this file was created from a conda working environment under Windows 11, so some packages may not be available in different versions/OS. We suggest to manually install them in this case. Edit the file with your system conda envs folder.
+Note: this file was created from a conda working environment under Windows 11, so some packages may not be available in different versions/OS. We suggest to manually install them in this case. Edit the file with your system conda envs folder. We also provide the ```environment_no_builds.yml``` file for a higher cross-platform compatibility (minor manual edits to the file may be needed).
 
 For compatibility with EdgeSHAPer code, [this](https://github.com/c-feldmann/rdkit_heatmaps) additional module should be installed. 
 
