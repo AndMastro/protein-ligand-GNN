@@ -18,8 +18,9 @@ Note: this file was created from a conda working environment under Windows 11, s
 If you encounter problems during the installation of the PyTorch Geometric dependencies, manually install in the conda environment using:
 
 ```bash
-pip install torch_scatter torch_sparse torch_cluster torch_spline_conv torch_geometric -f https://data.pyg.org/whl/torch-1.12.0+cu116.html
+pip install torch_sparse==0.6.15 torch_cluster==1.6.0 torch_spline_conv==1.2.1 torch_geometric==2.1.0.post1 -f https://data.pyg.org/whl/torch-1.12.0+cu116.html
 ```
+Note that the versions refer to the one in the ```environment.yml``` file. You are suggested to install such version to reproduce the results, but you are encouraged to try different versions to check for compatibility!
 
 For compatibility with EdgeSHAPer code, [this](https://github.com/c-feldmann/rdkit_heatmaps) additional module should be installed. 
 
