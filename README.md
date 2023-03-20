@@ -15,14 +15,15 @@ conda env create -f environment.yml
 
 Note: this file was created from a conda working environment under Windows 11, so some packages may not be available in different versions/OS. We suggest to manually install them in this case. Edit the file with your system conda envs folder. We also provide the ```environment_no_builds.yml``` file for a higher cross-platform compatibility (minor manual edits to the file may be needed).
 
-If you encounter problems during the installation of the PyTorch Geometric dependencies, manually install in the conda environment using:
+If you encounter problems during the installation of the PyTorch Geometric dependencies, manually install them in the conda environment using:
 
 ```bash
 pip install torch_sparse==0.6.15 torch_cluster==1.6.0 torch_spline_conv==1.2.1 torch_geometric==2.1.0.post1 -f https://data.pyg.org/whl/torch-1.12.0+cu116.html
 ```
-Note that the versions refer to the one in the ```environment.yml``` file. You are suggested to install such version to reproduce the results, but you are encouraged to try different versions to check for compatibility!
 
-For compatibility with EdgeSHAPer code, [this](https://github.com/c-feldmann/rdkit_heatmaps) additional module should be installed. 
+Note that the versions above are the ones found in the ```environment.yml``` file. We suggest to install such version for reproducibility, but you are encouraged to try different versions to check for compatibility!
+
+For compatibility with EdgeSHAPer code, [this](https://github.com/c-feldmann/rdkit_heatmaps) additional module must be installed. 
 
 Finally, download the data we used in our experiments from [here](http://bioinfo-pharma.u-strasbg.fr/labwebsite/downloads/pdbbind.tgz) (copy and paste in a browser the link address if the download does not start) and nzipped them into the ```data```.
 
