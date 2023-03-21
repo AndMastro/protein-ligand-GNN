@@ -107,6 +107,8 @@ def generate_pli_dataset_dict(data_path):
 
         dataset_dict = {}
         dirs = os.listdir(directory)
+        dirs = sorted(dirs, key = str)
+        
         for file in tqdm(dirs):
             interaction_name = os.fsdecode(file)
 
@@ -315,7 +317,6 @@ trustworthiness_score_list = []
 
 test_interaction_indices = []
 num_test_interactions = SAMPLES_TO_EXPLAIN
-probability_threshold = 0.75
 test_interaction_names = []
 test_interactions_affinities = []
 test_interaction_names_affinities_dict = {}
