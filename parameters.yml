@@ -13,7 +13,7 @@ trainer:
   MEAN_UPPER_BOUND: 7.5
   LOW_BOUND: 6
   HIGH_BOUND: 8
-  GNN_MODEL: "GIN" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
+  GNN_MODEL: "GAT" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
   EDGE_WEIGHT: True
   SCALING: True
   SEED: 42
@@ -55,3 +55,29 @@ top_k_computation:
   PLOT: True #if to save top_k graph images
   EXPLANATIONS_FOLDER: "results/explanations/GIN/" #folder where the explanations computed with explainer_script-py are
   TOP_K_VALUES: [5,10,15,20,25] #values for the top-k edges computation
+
+
+affinity_shifting:
+  DATA_PATH: "data/" #data location
+  MODEL_PATH: 'models/pretrained_models/model_GAT_best_98.ckpt' #model to use
+  GNN_MODEL: "GAT" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
+  HIDDEN_CHANNELS: 256
+  BATCH_SIZE: 32
+  EPOCHS: 100
+  SEED: 42
+  CLEAN_DATA: True
+  MIN_AFFINITY: 5
+  MAX_AFFINITY: 11
+  MEAN_LOWER_BOUND: 6.5
+  MEAN_UPPER_BOUND: 7.5
+  LOW_BOUND: 6
+  HIGH_BOUND: 8
+  EDGE_WEIGHT: True
+  SCALING: True
+  SEED: 42
+  HIDDEN_CHANNELS: 256
+  EPOCHS: 100
+  LEARNING_RATE: 1e-3
+  WEIGHT_DECAY: 5e-4
+  NODE_FEATURES: True
+  AFFINITY_SHIFT: 0.5  

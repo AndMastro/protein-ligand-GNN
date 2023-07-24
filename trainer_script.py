@@ -218,14 +218,20 @@ if __name__ == "__main__":
     print("Number of training samples: ", len(train_data))
     print("Number of validation samples: ", len(val_data))
     print("Number of core set samples: ", len(core_set_data))
+    print("Number of core set low affinity samples: ", len([sample for sample in core_set_data if sample.y < LOW_BOUND]))
+    print("Number of core set medium affinity samples: ", len([sample for sample in core_set_data if sample.y >= MEAN_LOWER_BOUND and sample.y <= MEAN_UPPER_BOUND]))
+    print("Number of core set high affinity samples: ", len([sample for sample in core_set_data if sample.y > HIGH_BOUND]))
     print("Number of hold out samples: ", len(hold_out_data))
+    print("Number of hold out low affinity samples: ", len([sample for sample in hold_out_data if sample.y < LOW_BOUND]))
+    print("Number of hold out medium affinity samples: ", len([sample for sample in hold_out_data if sample.y >= MEAN_LOWER_BOUND and sample.y <= MEAN_UPPER_BOUND]))
+    print("Number of hold out high affinity samples: ", len([sample for sample in hold_out_data if sample.y > HIGH_BOUND]))
 
     core_set_hold_out_interactions = core_set_interactions + hold_out_interactions
     core_set_hold_out_data = [dataset[i] for i in range(len(dataset)) if dataset[i].interaction_name in core_set_hold_out_interactions]
 
-    print("Number of test samples: ", len(core_set_hold_out_data))
+    print("Number of test (core + hold out) samples: ", len(core_set_hold_out_data))
     print("Number of test low affinity samples: ", len([sample for sample in core_set_hold_out_data if sample.y < LOW_BOUND]))
-    print("Numbr of test medium affinity samples: ", len([sample for sample in core_set_hold_out_data if sample.y >= MEAN_LOWER_BOUND and sample.y <= MEAN_UPPER_BOUND]))
+    print("Number of test medium affinity samples: ", len([sample for sample in core_set_hold_out_data if sample.y >= MEAN_LOWER_BOUND and sample.y <= MEAN_UPPER_BOUND]))
     print("Number of test high affinity samples: ", len([sample for sample in core_set_hold_out_data if sample.y > HIGH_BOUND]))
 
 
@@ -233,7 +239,7 @@ if __name__ == "__main__":
     val_loader = DataLoader(val_data, batch_size=BATCH_SIZE)
     core_set_loader = DataLoader(core_set_data, batch_size=BATCH_SIZE)
     hold_out_loader = DataLoader(hold_out_data, batch_size=BATCH_SIZE)
-
+    
 
     # ### Train the network
 
