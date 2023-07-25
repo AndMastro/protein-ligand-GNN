@@ -58,7 +58,8 @@ top_k_computation:
 
 statistics:
   DATA_PATH: "data/" #data location
-  TOP_K_VALUES: [5,10,15,20,25] #values for the top-k edges computation
+  EXPLANATIONS_FOLDER: "results/explanations/GIN/" 
+  TOP_K_VALUES: [25] #values for the top-k edges computation
   MIN_AFFINITY: 5
   MAX_AFFINITY: 11
   MEAN_LOWER_BOUND: 6.5

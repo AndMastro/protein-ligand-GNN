@@ -11,7 +11,6 @@ import torch
 from torch_geometric.data import Data
 
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 import networkx as nx
 
@@ -31,7 +30,7 @@ MEAN_UPPER_BOUND = args["statistics"]["MEAN_UPPER_BOUND"]
 CLEAN_DATA = args["statistics"]["CLEAN_DATA"]
 MIN_AFFINITY = args["statistics"]["MIN_AFFINITY"]
 MAX_AFFINITY = args["statistics"]["MAX_AFFINITY"]
-
+EXPLANATIONS_FOLDER = args["statistics"]["EXPLANATIONS_FOLDER"]
 TOP_K_VALUES = args["statistics"]["TOP_K_VALUES"]
 
 AFFINITY_GROUPS = ["low affinity", "medium affinity", "high affinity"]
@@ -148,12 +147,14 @@ medium_affinity_hold_out_data = [hold_out_data[i] for i in range(len(hold_out_da
 # count avg number of protein nodes and ligand nodes in training set
 num_protein_nodes = []
 num_ligand_nodes = []
+total_nodes = []
 
 for interaction in train_data:
     G = interaction.networkx_graph
     atoms_origin = nx.get_node_attributes(G, 'origin')
     current_num_protein_nodes = 0
     current_num_ligand_nodes = 0
+    num_nodes = G.number_of_nodes()
     for node in G.nodes:
         if atoms_origin[node] == "P":
             current_num_protein_nodes += 1
@@ -163,21 +164,28 @@ for interaction in train_data:
             raise Exception("Error: node origin not recognized (P and L are the only valid values)")
     num_protein_nodes.append(current_num_protein_nodes)
     num_ligand_nodes.append(current_num_ligand_nodes)
+    total_nodes.append(num_nodes)
+
 
 avg_num_protein_nodes = sum(num_protein_nodes)/len(num_protein_nodes)
 avg_num_ligand_nodes = sum(num_ligand_nodes)/len(num_ligand_nodes)
+avg_num_total_nodes = sum(total_nodes)/len(total_nodes)
 
-print("Avg number of protein nodes in training set: " + str(avg_num_protein_nodes))
-print("Avg number of ligand nodes in training set: " + str(avg_num_ligand_nodes))
+# print("Avg number of protein nodes in training set: " + str(avg_num_protein_nodes))
+# print("Avg number of ligand nodes in training set: " + str(avg_num_ligand_nodes))
+print("'%' of protein nodes in training set: " + str(round((avg_num_protein_nodes/avg_num_total_nodes)*100,1)))
+print("'%' of ligand nodes in training set: " + str(round((avg_num_ligand_nodes/avg_num_total_nodes)*100,1)))
+
 # count avg number of protein nodes and ligand nodes in validation set
 num_protein_nodes = []
 num_ligand_nodes = []
-
+total_nodes
 for interaction in val_data:
     G = interaction.networkx_graph
     atoms_origin = nx.get_node_attributes(G, 'origin')
     current_num_protein_nodes = 0
     current_num_ligand_nodes = 0
+    num_nodes = G.number_of_nodes()
     for node in G.nodes:
         if atoms_origin[node] == "P":
             current_num_protein_nodes += 1
@@ -187,22 +195,27 @@ for interaction in val_data:
             raise Exception("Error: node origin not recognized (P and L are the only valid values)")
     num_protein_nodes.append(current_num_protein_nodes)
     num_ligand_nodes.append(current_num_ligand_nodes)
+    total_nodes.append(num_nodes)
 
 avg_num_protein_nodes = sum(num_protein_nodes)/len(num_protein_nodes)
 avg_num_ligand_nodes = sum(num_ligand_nodes)/len(num_ligand_nodes)
+avg_num_total_nodes = sum(total_nodes)/len(total_nodes)
 
-print("Avg number of protein nodes in validation set: " + str(avg_num_protein_nodes))
-print("Avg number of ligand nodes in validation set: " + str(avg_num_ligand_nodes))
+# print("Avg number of protein nodes in validation set: " + str(avg_num_protein_nodes))
+# print("Avg number of ligand nodes in validation set: " + str(avg_num_ligand_nodes))
+print("'%' of protein nodes in validation set: " + str(round((avg_num_protein_nodes/avg_num_total_nodes)*100,1)))
+print("'%' of ligand nodes in validation set: " + str(round((avg_num_ligand_nodes/avg_num_total_nodes)*100,1)))
 
 # count avg number of protein nodes and ligand nodes in core set
 num_protein_nodes = []
 num_ligand_nodes = []
-
+total_nodes = []
 for interaction in core_set_data:
     G = interaction.networkx_graph
     atoms_origin = nx.get_node_attributes(G, 'origin')
     current_num_protein_nodes = 0
     current_num_ligand_nodes = 0
+    num_nodes = G.number_of_nodes()
     for node in G.nodes:
         if atoms_origin[node] == "P":
             current_num_protein_nodes += 1
@@ -212,22 +225,27 @@ for interaction in core_set_data:
             raise Exception("Error: node origin not recognized (P and L are the only valid values)")
     num_protein_nodes.append(current_num_protein_nodes)
     num_ligand_nodes.append(current_num_ligand_nodes)
+    total_nodes.append(num_nodes)
 
 avg_num_protein_nodes = sum(num_protein_nodes)/len(num_protein_nodes)
 avg_num_ligand_nodes = sum(num_ligand_nodes)/len(num_ligand_nodes)
+avg_num_total_nodes = sum(total_nodes)/len(total_nodes)
 
-print("Avg number of protein nodes in core set: " + str(avg_num_protein_nodes))
-print("Avg number of ligand nodes in core set: " + str(avg_num_ligand_nodes))
+# print("Avg number of protein nodes in core set: " + str(avg_num_protein_nodes))
+# print("Avg number of ligand nodes in core set: " + str(avg_num_ligand_nodes))
+print("'%' of protein nodes in core set: " + str(round((avg_num_protein_nodes/avg_num_total_nodes)*100,1)))
+print("'%' of ligand nodes in core set: " + str(round((avg_num_ligand_nodes/avg_num_total_nodes)*100,1)))
 
 # count avg number of protein nodes and ligand nodes in hold out set
 num_protein_nodes = []
 num_ligand_nodes = []
-
+total_nodes = []
 for interaction in hold_out_data:
     G = interaction.networkx_graph
     atoms_origin = nx.get_node_attributes(G, 'origin')
     current_num_protein_nodes = 0
     current_num_ligand_nodes = 0
+    num_nodes = G.number_of_nodes()
     for node in G.nodes:
         if atoms_origin[node] == "P":
             current_num_protein_nodes += 1
@@ -237,22 +255,27 @@ for interaction in hold_out_data:
             raise Exception("Error: node origin not recognized (P and L are the only valid values)")
     num_protein_nodes.append(current_num_protein_nodes)
     num_ligand_nodes.append(current_num_ligand_nodes)
+    total_nodes.append(num_nodes)
 
 avg_num_protein_nodes = sum(num_protein_nodes)/len(num_protein_nodes)
 avg_num_ligand_nodes = sum(num_ligand_nodes)/len(num_ligand_nodes)
+avg_num_total_nodes = sum(total_nodes)/len(total_nodes)
 
-print("Avg number of protein nodes in hold out set: " + str(avg_num_protein_nodes))
-print("Avg number of ligand nodes in hold out set: " + str(avg_num_ligand_nodes))
+# print("Avg number of protein nodes in hold out set: " + str(avg_num_protein_nodes))
+# print("Avg number of ligand nodes in hold out set: " + str(avg_num_ligand_nodes))
+print("'%' of protein nodes in hold-out set: " + str(round((avg_num_protein_nodes/avg_num_total_nodes)*100,1)))
+print("'%' of ligand nodes in hold-out set: " + str(round((avg_num_ligand_nodes/avg_num_total_nodes)*100,1)))
 
 # count avg number of protein nodes and ligand nodes in whole dataset
 num_protein_nodes = []
 num_ligand_nodes = []
-
+total_nodes
 for interaction in dataset:
     G = interaction.networkx_graph
     atoms_origin = nx.get_node_attributes(G, 'origin')
     current_num_protein_nodes = 0
     current_num_ligand_nodes = 0
+    num_nodes = G.number_of_nodes()
     for node in G.nodes:
         if atoms_origin[node] == "P":
             current_num_protein_nodes += 1
@@ -262,19 +285,23 @@ for interaction in dataset:
             raise Exception("Error: node origin not recognized (P and L are the only valid values)")
     num_protein_nodes.append(current_num_protein_nodes)
     num_ligand_nodes.append(current_num_ligand_nodes)
+    total_nodes.append(num_nodes)
 
 avg_num_protein_nodes = sum(num_protein_nodes)/len(num_protein_nodes)
 avg_num_ligand_nodes = sum(num_ligand_nodes)/len(num_ligand_nodes)
+avg_num_total_nodes = sum(total_nodes)/len(total_nodes)
 
-print("Avg number of protein nodes in whole dataset: " + str(avg_num_protein_nodes))
-print("Avg number of ligand nodes in whole dataset: " + str(avg_num_ligand_nodes))
+# print("Avg number of protein nodes in whole dataset: " + str(avg_num_protein_nodes))
+# print("Avg number of ligand nodes in whole dataset: " + str(avg_num_ligand_nodes))
+print("'%' of protein nodes in whole dataset set: " + str(round((avg_num_protein_nodes/avg_num_total_nodes)*100,1)))
+print("'%' of ligand nodes in whole dataset set: " + str(round((avg_num_ligand_nodes/avg_num_total_nodes)*100,1)))
 
 print("##############################################")
 # count avg number of protein nodes and ligand nodes in training set involved in interactions
 
 num_protein_nodes_in_interactions = []
 num_ligand_nodes_in_interactions = []
-
+total_nodes_in_interactions = []
 for interaction in train_data:
     G = interaction.networkx_graph
     bonds = dict(interaction.networkx_graph.edges())
@@ -282,6 +309,7 @@ for interaction in train_data:
     atoms_origin = nx.get_node_attributes(G, 'origin')
     current_protein_atoms_in_interactions = set()
     current_ligand_atoms_in_interactions = set()
+
     for bond in bonds:
         init_atom = bond[0]
         end_atom = bond[1]
@@ -297,18 +325,23 @@ for interaction in train_data:
         
     num_protein_nodes_in_interactions.append(len(current_protein_atoms_in_interactions))
     num_ligand_nodes_in_interactions.append(len(current_ligand_atoms_in_interactions))
+    total_nodes_in_interactions.append(len(current_protein_atoms_in_interactions) + len(current_ligand_atoms_in_interactions))
 
 avg_num_protein_nodes_in_interactions = sum(num_protein_nodes_in_interactions)/len(num_protein_nodes_in_interactions)
 avg_num_ligand_nodes_in_interactions = sum(num_ligand_nodes_in_interactions)/len(num_ligand_nodes_in_interactions)
+avg_num_total_nodes_in_interactions = sum(total_nodes_in_interactions)/len(total_nodes_in_interactions)
 
-print("Avg number of protein nodes in training set involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
-print("Avg number of ligand nodes in training set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+# print("Avg number of protein nodes in training set involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
+# print("Avg number of ligand nodes in training set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+print("'%' of protein nodes in training set involved in interactions: " + str(round((avg_num_protein_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
+print("'%' of ligand nodes in training set involved in interactions: " + str(round((avg_num_ligand_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
+# print("'%' of ligand nodes in training set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions/avg_num_total_nodes_in_interactions))
 
 # count avg number of protein nodes and ligand nodes in validation set involved in interactions
 
 num_protein_nodes_in_interactions = []
 num_ligand_nodes_in_interactions = []
-
+total_nodes_in_interactions = []
 for interaction in val_data:
     G = interaction.networkx_graph
     bonds = dict(interaction.networkx_graph.edges())
@@ -331,18 +364,22 @@ for interaction in val_data:
         
     num_protein_nodes_in_interactions.append(len(current_protein_atoms_in_interactions))
     num_ligand_nodes_in_interactions.append(len(current_ligand_atoms_in_interactions))
+    total_nodes_in_interactions.append(len(current_protein_atoms_in_interactions) + len(current_ligand_atoms_in_interactions))
 
 avg_num_protein_nodes_in_interactions = sum(num_protein_nodes_in_interactions)/len(num_protein_nodes_in_interactions)
 avg_num_ligand_nodes_in_interactions = sum(num_ligand_nodes_in_interactions)/len(num_ligand_nodes_in_interactions)
+avg_num_total_nodes_in_interactions = sum(total_nodes_in_interactions)/len(total_nodes_in_interactions)
 
-print("Avg number of protein nodes in validation set involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
-print("Avg number of ligand nodes in validation set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+# print("Avg number of protein nodes in validation set involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
+# print("Avg number of ligand nodes in validation set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+print("'%' of protein nodes in validation set involved in interactions: " + str(round((avg_num_protein_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
+print("'%' of ligand nodes in validation set involved in interactions: " + str(round((avg_num_ligand_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
 
 # count avg number of protein nodes and ligand nodes in core set involved in interactions
 
 num_protein_nodes_in_interactions = []
 num_ligand_nodes_in_interactions = []
-
+total_nodes_in_interactions = []
 for interaction in core_set_data:
     G = interaction.networkx_graph
     bonds = dict(interaction.networkx_graph.edges())
@@ -365,18 +402,22 @@ for interaction in core_set_data:
         
     num_protein_nodes_in_interactions.append(len(current_protein_atoms_in_interactions))
     num_ligand_nodes_in_interactions.append(len(current_ligand_atoms_in_interactions))
+    total_nodes_in_interactions.append(len(current_protein_atoms_in_interactions) + len(current_ligand_atoms_in_interactions))
 
 avg_num_protein_nodes_in_interactions = sum(num_protein_nodes_in_interactions)/len(num_protein_nodes_in_interactions)
 avg_num_ligand_nodes_in_interactions = sum(num_ligand_nodes_in_interactions)/len(num_ligand_nodes_in_interactions)
+avg_num_total_nodes_in_interactions = sum(total_nodes_in_interactions)/len(total_nodes_in_interactions)
 
-print("Avg number of protein nodes in core set involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
-print("Avg number of ligand nodes in core set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+# print("Avg number of protein nodes in core set involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
+# print("Avg number of ligand nodes in core set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+print("'%' of protein nodes in core set involved in interactions: " + str(round((avg_num_protein_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
+print("'%' of ligand nodes in core set involved in interactions: " + str(round((avg_num_ligand_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
 
 # count avg number of protein nodes and ligand nodes in hold out set involved in interactions
 
 num_protein_nodes_in_interactions = []
 num_ligand_nodes_in_interactions = []
-
+total_nodes_in_interactions = []
 for interaction in hold_out_data:
     G = interaction.networkx_graph
     bonds = dict(interaction.networkx_graph.edges())
@@ -399,18 +440,22 @@ for interaction in hold_out_data:
         
     num_protein_nodes_in_interactions.append(len(current_protein_atoms_in_interactions))
     num_ligand_nodes_in_interactions.append(len(current_ligand_atoms_in_interactions))
+    total_nodes_in_interactions.append(len(current_protein_atoms_in_interactions) + len(current_ligand_atoms_in_interactions))
 
 avg_num_protein_nodes_in_interactions = sum(num_protein_nodes_in_interactions)/len(num_protein_nodes_in_interactions)
 avg_num_ligand_nodes_in_interactions = sum(num_ligand_nodes_in_interactions)/len(num_ligand_nodes_in_interactions)
+avg_num_total_nodes_in_interactions = sum(total_nodes_in_interactions)/len(total_nodes_in_interactions)
 
-print("Avg number of protein nodes in hold out set involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
-print("Avg number of ligand nodes in hold out set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+# print("Avg number of protein nodes in hold out set involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
+# print("Avg number of ligand nodes in hold out set involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+print("'%' of protein nodes in hold-out set involved in interactions: " + str(round((avg_num_protein_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
+print("'%' of ligand nodes in hold-out set involved in interactions: " + str(round((avg_num_ligand_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
 
 # count avg number of protein nodes and ligand nodes in whole dataset involved in interactions
 
 num_protein_nodes_in_interactions = []
 num_ligand_nodes_in_interactions = []
-
+total_nodes_in_interactions = []
 for interaction in dataset:
     G = interaction.networkx_graph
     bonds = dict(interaction.networkx_graph.edges())
@@ -433,15 +478,22 @@ for interaction in dataset:
         
     num_protein_nodes_in_interactions.append(len(current_protein_atoms_in_interactions))
     num_ligand_nodes_in_interactions.append(len(current_ligand_atoms_in_interactions))
+    total_nodes_in_interactions.append(len(current_protein_atoms_in_interactions) + len(current_ligand_atoms_in_interactions))
 
 avg_num_protein_nodes_in_interactions = sum(num_protein_nodes_in_interactions)/len(num_protein_nodes_in_interactions)
 avg_num_ligand_nodes_in_interactions = sum(num_ligand_nodes_in_interactions)/len(num_ligand_nodes_in_interactions)
+avg_num_total_nodes_in_interactions = sum(total_nodes_in_interactions)/len(total_nodes_in_interactions)
 
-print("Avg number of protein nodes in whole dataset involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
-print("Avg number of ligand nodes in whole dataset involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+
+# print("Avg number of protein nodes in whole dataset involved in interactions: " + str(avg_num_protein_nodes_in_interactions))
+# print("Avg number of ligand nodes in whole dataset involved in interactions: " + str(avg_num_ligand_nodes_in_interactions))
+print("'%' of protein nodes in whole dataset set involved in interactions: " + str(round((avg_num_protein_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
+print("'%' of ligand nodes in whole dataset set involved in interactions: " + str(round((avg_num_ligand_nodes_in_interactions/avg_num_total_nodes_in_interactions)*100,1)))
 
 print("##############################################")
+
 # avg number of protein, ligand and interaction edges in hold out set
+relative_fraction_of_edges = {"protein": 0, "ligand": 0, "interaction": 0}
 
 num_protein_edges = []
 num_ligand_edges = []
@@ -481,15 +533,19 @@ avg_num_interaction_edges = sum(num_interaction_edges)/len(num_interaction_edges
 avg_num_intramolecular_edges = sum(num_intramolecular_edges)/len(num_intramolecular_edges)
 avg_num_total_edges_in_graph = sum(num_total_edge_in_graph)/len(num_total_edge_in_graph)
 
-print("Avg number of protein edges in hold out set: " + str(avg_num_protein_edges))
-print("Avg number of ligand edges in hold out set: " + str(avg_num_ligand_edges))
-print("Avg number of interaction edges in hold out set: " + str(avg_num_interaction_edges))
-print("Relative '%' of protein edges: " + str(avg_num_protein_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of ligand edges: " + str(avg_num_ligand_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of intermolecular (interaction) edges: " + str(avg_num_interaction_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of intramolecular (protein or ligand) edges: " + str(avg_num_intramolecular_edges/avg_num_total_edges_in_graph))
-
+# print("Avg number of protein edges in hold out set: " + str(avg_num_protein_edges))
+# print("Avg number of ligand edges in hold out set: " + str(avg_num_ligand_edges))
+# print("Avg number of interaction edges in hold out set: " + str(avg_num_interaction_edges))
+print("Relative '%' of protein edges: " + str(round((avg_num_protein_edges/avg_num_total_edges_in_graph)*100,1)))
+relative_fraction_of_edges["protein"] = avg_num_protein_edges/avg_num_total_edges_in_graph
+print("Relative '%' of ligand edges: " + str(round((avg_num_ligand_edges/avg_num_total_edges_in_graph)*100,1)))
+relative_fraction_of_edges["ligand"] = avg_num_ligand_edges/avg_num_total_edges_in_graph
+print("Relative '%' of intermolecular (interaction) edges: " + str(round((avg_num_interaction_edges/avg_num_total_edges_in_graph)*100,1)))
+relative_fraction_of_edges["interaction"] = avg_num_interaction_edges/avg_num_total_edges_in_graph
+print("Relative '%' of intramolecular (protein or ligand) edges: " + str(round((avg_num_intramolecular_edges/avg_num_total_edges_in_graph)*100,1)))
 print("##############################################")
+
+# percentage_total_edges = {"low affinity": [], "medium affinity": [], "high affinity": []}
 
 # avg number of protein, ligand and interaction edges in for each affinity level in hold out set
 
@@ -531,13 +587,17 @@ avg_num_interaction_edges = sum(num_interaction_edges)/len(num_interaction_edges
 avg_num_intramolecular_edges = sum(num_intramolecular_edges)/len(num_intramolecular_edges)
 avg_num_total_edges_in_graph = sum(num_total_edge_in_graph)/len(num_total_edge_in_graph)
 
-print("Avg number of protein edges in low affinity hold out set: " + str(avg_num_protein_edges))
-print("Avg number of ligand edges in low affinity hold out set: " + str(avg_num_ligand_edges))
-print("Avg number of interaction edges in low affinity hold out set: " + str(avg_num_interaction_edges))
-print("Relative '%' of protein edges: " + str(avg_num_protein_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of ligand edges: " + str(avg_num_ligand_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of intermolecular (interaction) edges: " + str(avg_num_interaction_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of intramolecular (protein or ligand) edges: " + str(avg_num_intramolecular_edges/avg_num_total_edges_in_graph))
+print("Low affinity hold out set")
+# print("Avg number of protein edges in low affinity hold out set: " + str(avg_num_protein_edges))
+# print("Avg number of ligand edges in low affinity hold out set: " + str(avg_num_ligand_edges))
+# print("Avg number of interaction edges in low affinity hold out set: " + str(avg_num_interaction_edges))
+print("Relative '%' of protein edges: " + str(round((avg_num_protein_edges/avg_num_total_edges_in_graph)*100,1)))
+print("Relative '%' of ligand edges: " + str(round((avg_num_ligand_edges/avg_num_total_edges_in_graph)*100,1)))
+print("Relative '%' of interaction (intermolecular) edges: " + str(round((avg_num_interaction_edges/avg_num_total_edges_in_graph)*100,1)))
+print("Relative '%' of intramolecular (protein or ligand) edges: " + str(round((avg_num_intramolecular_edges/avg_num_total_edges_in_graph)*100,1)))
+# print("Relative '%' of ligand edges: " + str(avg_num_ligand_edges/avg_num_total_edges_in_graph))
+# print("Relative '%' of intermolecular (interaction) edges: " + str(avg_num_interaction_edges/avg_num_total_edges_in_graph))
+# print("Relative '%' of intramolecular (protein or ligand) edges: " + str(avg_num_intramolecular_edges/avg_num_total_edges_in_graph))
 
 print("##############################################")
 
@@ -579,13 +639,17 @@ avg_num_interaction_edges = sum(num_interaction_edges)/len(num_interaction_edges
 avg_num_intramolecular_edges = sum(num_intramolecular_edges)/len(num_intramolecular_edges)
 avg_num_total_edges_in_graph = sum(num_total_edge_in_graph)/len(num_total_edge_in_graph)
 
-print("Avg number of protein edges in medium affinity hold out set: " + str(avg_num_protein_edges))
-print("Avg number of ligand edges in medium affinity hold out set: " + str(avg_num_ligand_edges))
-print("Avg number of interaction edges in medium affinity hold out set: " + str(avg_num_interaction_edges))
-print("Relative '%' of protein edges: " + str(avg_num_protein_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of ligand edges: " + str(avg_num_ligand_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of intermolecular (interaction) edges: " + str(avg_num_interaction_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of intramolecular (protein or ligand) edges: " + str(avg_num_intramolecular_edges/avg_num_total_edges_in_graph))
+print("Medium affinity hold out set")
+# print("Avg number of protein edges in medium affinity hold out set: " + str(avg_num_protein_edges))
+# print("Avg number of ligand edges in medium affinity hold out set: " + str(avg_num_ligand_edges))
+# print("Avg number of interaction edges in medium affinity hold out set: " + str(avg_num_interaction_edges))
+print("Relative '%' of protein edges: " + str(round((avg_num_protein_edges/avg_num_total_edges_in_graph)*100,1)))
+print("Relative '%' of ligand edges: " + str(round((avg_num_ligand_edges/avg_num_total_edges_in_graph)*100,1)))
+print("Relative '%' of interaction (intermolecular) edges: " + str(round((avg_num_interaction_edges/avg_num_total_edges_in_graph)*100,1)))
+print("Relative '%' of intramolecular (protein or ligand) edges: " + str(round((avg_num_intramolecular_edges/avg_num_total_edges_in_graph)*100,1)))
+# print("Relative '%' of ligand edges: " + str(avg_num_ligand_edges/avg_num_total_edges_in_graph))
+# print("Relative '%' of intermolecular (interaction) edges: " + str(avg_num_interaction_edges/avg_num_total_edges_in_graph))
+# print("Relative '%' of intramolecular (protein or ligand) edges: " + str(avg_num_intramolecular_edges/avg_num_total_edges_in_graph))
 
 print("##############################################")
 
@@ -627,16 +691,19 @@ avg_num_interaction_edges = sum(num_interaction_edges)/len(num_interaction_edges
 avg_num_intramolecular_edges = sum(num_intramolecular_edges)/len(num_intramolecular_edges)
 avg_num_total_edges_in_graph = sum(num_total_edge_in_graph)/len(num_total_edge_in_graph)
 
-print("Avg number of protein edges in high affinity hold out set: " + str(avg_num_protein_edges))
-print("Avg number of ligand edges in high affinity hold out set: " + str(avg_num_ligand_edges))
-print("Avg number of interaction edges in high affinity hold out set: " + str(avg_num_interaction_edges))
-print("Relative '%' of protein edges: " + str(avg_num_protein_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of ligand edges: " + str(avg_num_ligand_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of intermolecular (interaction) edges: " + str(avg_num_interaction_edges/avg_num_total_edges_in_graph))
-print("Relative '%' of intramolecular (protein or ligand) edges: " + str(avg_num_intramolecular_edges/avg_num_total_edges_in_graph))
+# print("Avg number of protein edges in high affinity hold out set: " + str(avg_num_protein_edges))
+# print("Avg number of ligand edges in high affinity hold out set: " + str(avg_num_ligand_edges))
+# print("Avg number of interaction edges in high affinity hold out set: " + str(avg_num_interaction_edges))
+print("High affinity hold out set")
+print("Relative '%' of protein edges: " + str(round((avg_num_protein_edges/avg_num_total_edges_in_graph)*100, 1))) 
+print("Relative '%' of ligand edges: " + str(round((avg_num_ligand_edges/avg_num_total_edges_in_graph)*100, 1)))
+print("Relative '%' of interaction (intermolecular) edges: " + str(round((avg_num_interaction_edges/avg_num_total_edges_in_graph)*100, 1)))
+print("Relative '%' of intramolecular (protein or ligand) edges: " + str(round((avg_num_intramolecular_edges/avg_num_total_edges_in_graph)*100,1)))
 
-import sys        
-sys.exit(0)    
+# import sys        
+# sys.exit(0)    
+
+print(TOP_K_VALUES)
 for affinity_group in AFFINITY_GROUPS:
     
     print("Computing top k for " + affinity_group + " set")
@@ -757,18 +824,21 @@ for affinity_group in AFFINITY_GROUPS:
         num_total_edges_in_graph_list.append(num_total_edges_in_graph)
 
 
-        
-        # with open(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_statistics_top_k_edges.txt", "w+") as f:
-        #     f.write("Top k edges statistics\n\n")
 
         absolute_phi = np.abs(rdkit_bonds_phi)
         #sort indices according to decreasing phi values
         indices_sorted = np.argsort(-absolute_phi)
         
         for top_k_t in TOP_K_VALUES:
-
+            
             top_edges = indices_sorted[:top_k_t]
 
+            # print("top edges: " + str(top_edges))
+            
+            # print("len top edges: " + str(len(top_edges)))
+
+            # print("bonds: " + str(rdkit_bonds))
+            # sys.exit()
             num_total_top_abs_edges = top_k_t
             num_edge_in_protein = 0
             num_edge_in_ligand = 0
@@ -798,75 +868,51 @@ for affinity_group in AFFINITY_GROUPS:
                 
                     edges_to_draw.append((init_atom, end_atom))
                 else:
+                    # print("CATRO'")
                     edges_colors.append("lightgrey") 
                     edges_widths.append(1.5)
 
-            if PLOT:
-
-                #draw graph with important edges
-                plt.figure(figsize=(10,10))
-                pos = nx.spring_layout(G)
-
-                nx.draw(G, pos=pos, with_labels=True, font_weight='bold', labels=nx.get_node_attributes(G, 'atom_type'), node_color=colors,edge_color=edges_colors, width=edges_widths, edge_cmap=plt.cm.bwr)   
-
-                plt.savefig(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_EdgeSHAPer_top_" + str(top_k_t) + "_edges_full_graph.png", dpi=300)
                 
-                plt.close()
-
-                #save original graph
-                if top_k_t == 25:
-                    plt.figure(figsize=(10,10))
-                    
-                    nx.draw(G, pos=pos, with_labels=True, font_weight='bold', labels=nx.get_node_attributes(G, 'atom_type'), node_color=colors)
-                    
-                    plt.savefig(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_full_interaction_graph.png", dpi=300)
-                    
-                    plt.close()
-                
-            
-            # with open(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_statistics_top_k_edges.txt", "a") as f:
-            #     f.write("Top " + str(top_k_t) + " relevant edges\n\n")
-            #     if num_total_edge_in_protein == 0:
-            #         f.write("Number of relevant edges connecting protein pseudo-atoms: 0\n")
-                    
-            #     else:
-            #         f.write("Number of relevant edges connecting protein pseudo-atoms: " + str(num_edge_in_protein) + "\n")
-            #         f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_protein/num_total_top_abs_edges)*100, 1)) + "%\n")
-                    
-            #     if num_total_edge_in_ligand == 0:
-            #         f.write("Number of relevant edges connecting ligand pseudo-atoms: 0\n")
-                    
-            #     else:
-            #         f.write("Number of relevant edges connecting ligand pseudo-atoms: " + str(num_edge_in_ligand) + "\n")
-            #         f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_ligand/num_total_top_abs_edges)*100, 1)) + "%\n")
-                    
-            #     if num_total_edge_in_between == 0:
-            #         f.write("Number of relevant edges connecting protein and ligand pseudo-atoms: 0\n")
-                    
-            #     else:
-            #         f.write("Number of relevant edges connecting protein and ligand pseudo-atoms: " + str(num_edge_in_between) + "\n")
-            #         f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_between/num_total_top_abs_edges)*100, 1)) + "%\n\n")
-                    
-        
-                # num_relevant_edge_in_protein_list[top_k_t].append(num_edge_in_protein)
-                # num_relevant_edge_in_ligand_list[top_k_t].append(num_edge_in_ligand)
-                # num_relevant_edge_in_between_list[top_k_t].append(num_edge_in_between)
-                # num_total_relevant_edges_list[top_k_t].append(num_total_top_abs_edges)
+            # print("num_edge_in_protein: " + str(num_edge_in_protein))
+            # print("num_edge_in_ligand: " + str(num_edge_in_ligand))
+            # print("num_edge_in_between: " + str(num_edge_in_between))
+            # print("num_total_top_abs_edges: " + str(num_total_top_abs_edges))
+            # print("num_total_edges_in_graph: " + str(num_edge_in_protein + num_edge_in_ligand + num_edge_in_between))
+            # sys.exit()
+            num_relevant_edge_in_protein_list[top_k_t].append(num_edge_in_protein)
+            num_relevant_edge_in_ligand_list[top_k_t].append(num_edge_in_ligand)
+            num_relevant_edge_in_between_list[top_k_t].append(num_edge_in_between)
+            num_total_relevant_edges_list[top_k_t].append(num_total_top_abs_edges)
 
     
-    # with open(directory + "/statistics_top_k_edges.txt", "w+") as f:
-    #     f.write("Top k edges statistics\n\n")
+   
 
-    # for top_k_t in TOP_K_VALUES:
+    for top_k_t in TOP_K_VALUES:
 
-    #     with open(directory + "/statistics_top_k_edges.txt", "a") as f:
+        
 
-    #         f.write("Top " + str(top_k_t) + " relevant edges\n\n")
-           
-    #         f.write("Avg number of relevant edges in protein: " +  str(round(np.mean(num_relevant_edge_in_protein_list[top_k_t]), 3)) + "\n")
-    #         f.write("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_protein_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n")
-    #         f.write("Avg number of relevant edges in ligand: " +  str(round(np.mean(num_relevant_edge_in_ligand_list[top_k_t]), 3)) + "\n")
-    #         f.write("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_ligand_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n")
-    #         f.write("Avg number of relevant edges in interaction: " + str(round(np.mean(num_relevant_edge_in_between_list[top_k_t]), 3)) + "\n")
-    #         f.write("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_between_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n\n")
+        print("Top " + str(top_k_t) + " relevant edges\n\n")
+        
+        print("Avg number of relevant edges in protein: " +  str(round(np.mean(num_relevant_edge_in_protein_list[top_k_t]), 3)) + "\n")
+        print("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_protein_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n")
+        print("Avg number of relevant edges in ligand: " +  str(round(np.mean(num_relevant_edge_in_ligand_list[top_k_t]), 3)) + "\n")
+        print("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_ligand_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n")
+        print("Avg number of relevant edges in interaction: " + str(round(np.mean(num_relevant_edge_in_between_list[top_k_t]), 3)) + "\n")
+        print("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_between_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n\n")
 
+        print("Relative fraction of top " + str(top_k_t) + " edges for ((topk/25) /(category/total))  " + "\n\n")
+        
+        print("Protein edges: " + str(round((np.mean(num_relevant_edge_in_protein_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))/relative_fraction_of_edges["protein"], 3)) + "\n")
+        print("Ligand edges: " + str(round((np.mean(num_relevant_edge_in_ligand_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))/relative_fraction_of_edges["ligand"], 3)) + "\n")
+        print("Interaction edges: " + str(round((np.mean(num_relevant_edge_in_between_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))/relative_fraction_of_edges["interaction"], 3)) + "\n\n")
+
+# print("Relative fraction of top " + str(top_k_t) + " edges for ((topk/25) /(category/total))  " + "\n\n")
+        
+# #print("Avg number of relevant edges in protein: " +  str(round(np.mean(num_relevant_edge_in_protein_list[top_k_t]), 3)) + "\n")
+# print("Protein edges: " + str(round(((np.mean(num_relevant_edge_in_protein_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))/relative_fraction_of_edges["protein"])*100, 1)) + "%\n")
+# print("Protein edges prova: " + str(round((np.mean(num_relevant_edge_in_protein_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n")
+# print(num_relevant_edge_in_protein_list)
+# #print("Avg number of relevant edges in ligand: " +  str(round(np.mean(num_relevant_edge_in_ligand_list[top_k_t]), 3)) + "\n")
+# print("Ligand edges: " + str(round(((np.mean(num_relevant_edge_in_ligand_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))/relative_fraction_of_edges["ligand"])*100, 1)) + "%\n")
+# #print("Avg number of relevant edges in interaction: " + str(round(np.mean(num_relevant_edge_in_between_list[top_k_t]), 3)) + "\n")
+# print("Interaction edges: " + str(round(((np.mean(num_relevant_edge_in_between_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))/relative_fraction_of_edges["interaction"])*100, 1)) + "%\n\n")
