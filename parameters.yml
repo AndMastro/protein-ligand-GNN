@@ -25,11 +25,11 @@ trainer:
 
 explainer:
   DATA_PATH: "data/" #data location
-  SAVE_FOLDER: 'results/explanations/' #folder where explanations will be saved
-  MODEL_PATH: 'models/pretrained_models/model_GIN_best_67.ckpt' #model to use for the explanation phase
-  GNN_MODEL: "GIN" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
+  SAVE_FOLDER: 'results/additional_experiments/pgexplainer_explanations/' #folder where explanations will be saved
+  MODEL_PATH: 'models/pretrained_models/model_GraphSAGE_best_71.ckpt' #model to use for the explanation phase
+  GNN_MODEL: "GraphSAGE" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
   SAMPLES_TO_EXPLAIN: 20 #number of test samples to explain
-  AFFINITY_SET: "low" #affinity set for which to perform the explanations (low, medium, high)
+  AFFINITY_SET: "high" #affinity set for which to perform the explanations (low, medium, high)
   HIDDEN_CHANNELS: 256
   BATCH_SIZE: 32
   EPOCHS: 100
@@ -41,7 +41,7 @@ explainer:
   MEAN_UPPER_BOUND: 7.5
   LOW_BOUND: 6
   HIGH_BOUND: 8
-  EDGE_WEIGHT: True
+  EDGE_WEIGHT: True #NOTE: If set to True, this will be ignored for GraphSAGE and GIN since they do not support edge weights
   SCALING: True
   SEED: 42
   HIDDEN_CHANNELS: 256
@@ -53,12 +53,12 @@ explainer:
 top_k_computation:
   DATA_PATH: "data/" #data location
   PLOT: True #if to save top_k graph images
-  EXPLANATIONS_FOLDER: "results/explanations/GIN/" #folder where the explanations computed with explainer_script-py are
+  EXPLANATIONS_FOLDER: "results/additional_experiments/pgexplainer_explanations/GraphSAGE/" #folder where the explanations computed with explainer_script.py are
   TOP_K_VALUES: [5,10,15,20,25] #values for the top-k edges computation
 
 statistics:
   DATA_PATH: "data/" #data location
-  EXPLANATIONS_FOLDER: "results/explanations/GIN/" 
+  EXPLANATIONS_FOLDER: "results/explanations/GC_GNN/" 
   TOP_K_VALUES: [25] #values for the top-k edges computation
   MIN_AFFINITY: 5
   MAX_AFFINITY: 11

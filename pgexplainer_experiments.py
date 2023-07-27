@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
 ### Module implementing explanation phase with PGExplainer ###
 ### Author: Andrea Mastropietro © All rights reserved ###
 
@@ -10,6 +16,7 @@ import torch
 from torch_geometric.data import Data
 from torch_geometric.loader import DataLoader
 from torch_geometric.explain import Explainer, PGExplainer, ModelConfig
+
 
 import numpy as np
 from sklearn.preprocessing import RobustScaler, MinMaxScaler
@@ -28,7 +35,7 @@ with open("parameters.yml") as paramFile:
         args = yaml.load(paramFile, Loader=yaml.FullLoader)
 
 DATA_PATH = args["explainer"]["DATA_PATH"]
-# SAVE_FOLDER = args["explainer"]["SAVE_FOLDER"]
+SAVE_FOLDER = args["explainer"]["SAVE_FOLDER"]
 
 CLEAN_DATA = args["explainer"]["CLEAN_DATA"]
 MIN_AFFINITY = args["explainer"]["MIN_AFFINITY"]
@@ -61,6 +68,7 @@ AFFINITY_SET = args["explainer"]["AFFINITY_SET"]
 assert(AFFINITY_SET == "low" or AFFINITY_SET == "high" or AFFINITY_SET == "medium")
 
 print("Explaining affinity set: ", AFFINITY_SET)
+print("Using explainer: PGExplainer")
 
 SAMPLES_TO_EXPLAIN = args["explainer"]["SAMPLES_TO_EXPLAIN"]
 
@@ -368,49 +376,29 @@ for test_interaction_index in all_test_interaction_indices:
 TARGET_CLASS = None
 
 
-explainer = Explainer(
+
+# In[2]:
+
+
+pg_explainer = Explainer(
     model=model,
-    algorithm=PGExplainer(epochs=30, lr=0.003).to(device),
+    algorithm=PGExplainer(epochs=100, lr=1e-3).to(device), #(epochs=30, lr=0.003) #using the same epochs and lr as for the GNN models
     explanation_type='phenomenon', #model phenomenon
     edge_mask_type='object',
     model_config = ModelConfig(mode="regression", task_level = "graph", return_type = "raw")
 )
 
-# explainer = explainer.to(device)
-# Train against a variety of node-level or graph-level predictions. Problem with devices, with CPU ok, with cuda something is somehow still in CPU
 print("Training PGExplainer...")
-# for param in model.parameters():
-#     param.to(device)
-# model.to("cpu")
-for epoch in tqdm(range(30)): #30
-    # model.train()
+
+for epoch in tqdm(range(100)): #30
+    
     for data_index in train_loader:  # Indices to train against.
         data_index = data_index.to(device)
-        # model.to(device)
-        # model.to(device)
-        # print("x shape: ", data_index.x.shape)
-        # print("y shape: ", data_index.y.shape)
-        # print("x :", data_index.x)
-        # print("y :", data_index.y)
-
-        # print("x device: ", data_index.x.device)
-        # print("y device: ", data_index.y.device)
-        # print("edge_index device: ", data_index.edge_index.device)
-        # print("batch device: ", data_index.batch.device)
-        # print("model device: ", model.device)
-        # sys.exit()
+        
         target_unsqueezed = torch.unsqueeze(data_index.y, 1).to(device) #.to("cpu")
-        loss = explainer.algorithm.train(epoch, model, data_index.x, data_index.edge_index, batch = data_index.batch,
+        loss = pg_explainer.algorithm.train(epoch, model, data_index.x, data_index.edge_index, batch = data_index.batch,
                                          target=target_unsqueezed, index=0) #explaining a regression torch.LongTensor(0).to(device)
 
-# Get the final explanations:
-print("Computing explanations...")
-batch = torch.zeros(hold_out_data[0].x.shape[0], dtype=int, device=device)
-explanation = explainer(hold_out_data[0].x.to(device), hold_out_data[0].edge_index.to(device), batch = batch, target=hold_out_data[0].y.to(device), index=0)
-
-print(explanation) 
-import sys
-sys.exit()
 
 for index in tqdm(test_interaction_indices):
     model.eval()
@@ -421,7 +409,7 @@ for index in tqdm(test_interaction_indices):
     if EDGE_WEIGHT:
         edge_weight_to_pass = test_interaction.edge_weight.to(device)
 
-    batch = torch.zeros(test_interaction.x.shape[0], dtype=int, device=test_interaction.x.device)
+    batch = torch.zeros(test_interaction.x.shape[0], dtype=int, device=device)
     
     
     out = model(test_interaction.x.to(device), test_interaction.edge_index.to(device), batch=batch.to(device), edge_weight=edge_weight_to_pass) #test_interaction.edge_weight.to(device)
@@ -429,10 +417,9 @@ for index in tqdm(test_interaction_indices):
     
     #explainability
 
-    edgeshaper_explainer = Edgeshaper(model, test_interaction.x, test_interaction.edge_index, edge_weight = test_interaction.edge_weight, device = device)
-
-    phi_edges = edgeshaper_explainer.explain(M = 100, target_class = TARGET_CLASS, deviation = None, seed = SEED) #deviation = 1e-3
-
+    explanation = pg_explainer(test_interaction.x.to(device), test_interaction.edge_index.to(device), batch = batch, target=test_interaction.y.to(device), index=0)
+    attribution_edges = explanation.edge_mask.tolist() #not actaully phi, but leaving the name to avoid refactoring
+    
     #plotting
     num_bonds = test_interaction.networkx_graph.number_of_edges()
     rdkit_bonds_phi = [0]*num_bonds
@@ -447,8 +434,8 @@ for index in tqdm(test_interaction_indices):
         
         rdkit_bonds[(init_atom, end_atom)] = i
 
-    for i in range(len(phi_edges)):
-        phi_value = phi_edges[i]
+    for i in range(len(attribution_edges)):
+        phi_value = attribution_edges[i]
         init_atom = test_interaction.edge_index[0][i].item()
         end_atom = test_interaction.edge_index[1][i].item()
         
@@ -475,6 +462,7 @@ for index in tqdm(test_interaction_indices):
         f.write("Predicted value: " + str(out.item()) + "\n\n")
 
 
-        f.write("Shapley values for edges: \n\n")
-        for i in range(len(phi_edges)):
-            f.write("(" + str(test_interaction.edge_index[0][i].item()) + "," + str(test_interaction.edge_index[1][i].item()) + "): " + str(phi_edges[i]) + "\n")
+        f.write("Attributions for edges: \n\n")
+        for i in range(len(attribution_edges)):
+            f.write("(" + str(test_interaction.edge_index[0][i].item()) + "," + str(test_interaction.edge_index[1][i].item()) + "): " + str(attribution_edges[i]) + "\n")
+

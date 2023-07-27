@@ -170,7 +170,7 @@ for affinity_group in AFFINITY_GROUPS:
             shapley_computed = False
             while not shapley_computed:
                 line = f.readline()
-                if line.strip().startswith("Shapley"):
+                if line.strip().startswith("Shapley") or line.strip().startswith("Attributions"):
                     f.readline()
                     lines = f.readlines()
                     for line in lines:
