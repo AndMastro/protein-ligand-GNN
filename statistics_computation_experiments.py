@@ -179,7 +179,7 @@ print("'%' of ligand nodes in training set: " + str(round((avg_num_ligand_nodes/
 # count avg number of protein nodes and ligand nodes in validation set
 num_protein_nodes = []
 num_ligand_nodes = []
-total_nodes
+total_nodes = []
 for interaction in val_data:
     G = interaction.networkx_graph
     atoms_origin = nx.get_node_attributes(G, 'origin')
