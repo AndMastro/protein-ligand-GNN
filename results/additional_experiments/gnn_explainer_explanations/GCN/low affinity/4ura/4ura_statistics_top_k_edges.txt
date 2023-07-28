@@ -1,0 +1,42 @@
+Top k edges statistics
+
+Top 5 relevant edges
+
+Number of relevant edges connecting protein pseudo-atoms: 0
+Number of relevant edges connecting ligand pseudo-atoms: 4
+% w.r.t. total number of relevant edges: 80.0%
+Number of relevant edges connecting protein and ligand pseudo-atoms: 1
+% w.r.t. total number of relevant edges: 20.0%
+
+Top 10 relevant edges
+
+Number of relevant edges connecting protein pseudo-atoms: 0
+Number of relevant edges connecting ligand pseudo-atoms: 9
+% w.r.t. total number of relevant edges: 90.0%
+Number of relevant edges connecting protein and ligand pseudo-atoms: 1
+% w.r.t. total number of relevant edges: 10.0%
+
+Top 15 relevant edges
+
+Number of relevant edges connecting protein pseudo-atoms: 0
+Number of relevant edges connecting ligand pseudo-atoms: 13
+% w.r.t. total number of relevant edges: 86.7%
+Number of relevant edges connecting protein and ligand pseudo-atoms: 2
+% w.r.t. total number of relevant edges: 13.3%
+
+Top 20 relevant edges
+
+Number of relevant edges connecting protein pseudo-atoms: 0
+Number of relevant edges connecting ligand pseudo-atoms: 17
+% w.r.t. total number of relevant edges: 85.0%
+Number of relevant edges connecting protein and ligand pseudo-atoms: 3
+% w.r.t. total number of relevant edges: 15.0%
+
+Top 25 relevant edges
+
+Number of relevant edges connecting protein pseudo-atoms: 0
+Number of relevant edges connecting ligand pseudo-atoms: 21
+% w.r.t. total number of relevant edges: 84.0%
+Number of relevant edges connecting protein and ligand pseudo-atoms: 4
+% w.r.t. total number of relevant edges: 16.0%
+
