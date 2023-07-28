@@ -4,7 +4,7 @@
 # In[1]:
 
 
-### Module implementing explanation phase with PGExplainer ###
+### Module implementing explanation phase with GNNExplainer ###
 ### Author: Andrea Mastropietro © All rights reserved ###
 
 import os
@@ -15,8 +15,7 @@ import yaml
 import torch
 from torch_geometric.data import Data
 from torch_geometric.loader import DataLoader
-from torch_geometric.explain import Explainer, PGExplainer, ModelConfig
-
+from torch_geometric.explain import Explainer, GNNExplainer
 
 import numpy as np
 from sklearn.preprocessing import RobustScaler, MinMaxScaler
@@ -34,43 +33,43 @@ print("Working on device: ", device)
 with open("parameters.yml") as paramFile:  
         args = yaml.load(paramFile, Loader=yaml.FullLoader)
 
-DATA_PATH = args["explainer"]["DATA_PATH"]
-SAVE_FOLDER = args["explainer"]["SAVE_FOLDER"]
+DATA_PATH = args["gnn_explainer"]["DATA_PATH"]
+SAVE_FOLDER = args["gnn_explainer"]["SAVE_FOLDER"]
 
-CLEAN_DATA = args["explainer"]["CLEAN_DATA"]
-MIN_AFFINITY = args["explainer"]["MIN_AFFINITY"]
-MAX_AFFINITY = args["explainer"]["MAX_AFFINITY"]
+CLEAN_DATA = args["gnn_explainer"]["CLEAN_DATA"]
+MIN_AFFINITY = args["gnn_explainer"]["MIN_AFFINITY"]
+MAX_AFFINITY = args["gnn_explainer"]["MAX_AFFINITY"]
 NUM_CLASSES = 1 #set it up to 1 since we are facing a regression problem
 
-MEAN_LOWER_BOUND = args["explainer"]["MEAN_LOWER_BOUND"]
-MEAN_UPPER_BOUND = args["explainer"]["MEAN_UPPER_BOUND"]
-LOW_BOUND = args["explainer"]["LOW_BOUND"]
-HIGH_BOUND = args["explainer"]["HIGH_BOUND"]
+MEAN_LOWER_BOUND = args["gnn_explainer"]["MEAN_LOWER_BOUND"]
+MEAN_UPPER_BOUND = args["gnn_explainer"]["MEAN_UPPER_BOUND"]
+LOW_BOUND = args["gnn_explainer"]["LOW_BOUND"]
+HIGH_BOUND = args["gnn_explainer"]["HIGH_BOUND"]
 
-MODEL_NAME = args["explainer"]["GNN_MODEL"]
+MODEL_NAME = args["gnn_explainer"]["GNN_MODEL"]
 GNN = GCN if MODEL_NAME == "GCN" else GraphSAGE if MODEL_NAME == "GraphSAGE" else GAT if MODEL_NAME == "GAT" else GIN if MODEL_NAME == "GIN" else GINE if MODEL_NAME == "GINE" else GC_GNN if MODEL_NAME == "GC_GNN" else None
-MODEL_PATH = args["explainer"]["MODEL_PATH"]
+MODEL_PATH = args["gnn_explainer"]["MODEL_PATH"]
 
 print("Using model: ", MODEL_NAME)
 
-EDGE_WEIGHT = args["explainer"]["EDGE_WEIGHT"]
-SCALING = args["explainer"]["SCALING"]
-BATCH_SIZE = args["explainer"]["BATCH_SIZE"]
-LEARNING_RATE = float(args["explainer"]["LEARNING_RATE"])
-WEIGHT_DECAY = float(args["explainer"]["WEIGHT_DECAY"])
+EDGE_WEIGHT = args["gnn_explainer"]["EDGE_WEIGHT"]
+SCALING = args["gnn_explainer"]["SCALING"]
+BATCH_SIZE = args["gnn_explainer"]["BATCH_SIZE"]
+LEARNING_RATE = float(args["gnn_explainer"]["LEARNING_RATE"])
+WEIGHT_DECAY = float(args["gnn_explainer"]["WEIGHT_DECAY"])
 
-SEED = args["explainer"]["SEED"]
-HIDDEN_CHANNELS = args["explainer"]["HIDDEN_CHANNELS"]
-EPOCHS = args["explainer"]["EPOCHS"]
-NODE_FEATURES = args["explainer"]["NODE_FEATURES"] #if False, use dummy features (1)
-AFFINITY_SET = args["explainer"]["AFFINITY_SET"] 
+SEED = args["gnn_explainer"]["SEED"]
+HIDDEN_CHANNELS = args["gnn_explainer"]["HIDDEN_CHANNELS"]
+EPOCHS = args["gnn_explainer"]["EPOCHS"]
+NODE_FEATURES = args["gnn_explainer"]["NODE_FEATURES"] #if False, use dummy features (1)
+AFFINITY_SET = args["gnn_explainer"]["AFFINITY_SET"] 
 
 assert(AFFINITY_SET == "low" or AFFINITY_SET == "high" or AFFINITY_SET == "medium")
 
 print("Explaining affinity set: ", AFFINITY_SET)
-print("Using explainer: PGExplainer")
+print("Using explainer: GNNExplainer")
 
-SAMPLES_TO_EXPLAIN = args["explainer"]["SAMPLES_TO_EXPLAIN"]
+SAMPLES_TO_EXPLAIN = args["gnn_explainer"]["SAMPLES_TO_EXPLAIN"]
 
 set_all_seeds(SEED)
 
@@ -380,25 +379,18 @@ TARGET_CLASS = None
 # In[2]:
 
 
-pg_explainer = Explainer(
+gnn_explainer = Explainer(
     model=model,
-    algorithm=PGExplainer(epochs=epochs, lr=LEARNING_RATE).to(device), #(epochs=30, lr=0.003) #using the same epochs and lr as for the GNN models
-    explanation_type='phenomenon', #model phenomenon
+    algorithm=GNNExplainer(epochs=epochs, lr=LEARNING_RATE),
+    explanation_type='model',
+    node_mask_type='attributes',
     edge_mask_type='object',
-    model_config = ModelConfig(mode="regression", task_level = "graph", return_type = "raw")
+    model_config=dict(
+        mode='regression',
+        task_level='graph',
+        return_type='raw',
+    ),
 )
-
-print("Training PGExplainer...")
-
-for epoch in tqdm(range(100)): #30
-    
-    for data_index in train_loader:  # Indices to train against.
-        data_index = data_index.to(device)
-        
-        target_unsqueezed = torch.unsqueeze(data_index.y, 1).to(device) #.to("cpu")
-        loss = pg_explainer.algorithm.train(epoch, model, data_index.x, data_index.edge_index, batch = data_index.batch, edge_weight = data_index.edge_weight,
-                                         target=target_unsqueezed, index=0) #explaining a regression torch.LongTensor(0).to(device)
-
 
 for index in tqdm(test_interaction_indices):
     model.eval()
@@ -416,10 +408,13 @@ for index in tqdm(test_interaction_indices):
     
     
     #explainability
-
-    explanation = pg_explainer(test_interaction.x.to(device), test_interaction.edge_index.to(device), batch = batch, edge_weight = edge_weight_to_pass, target=test_interaction.y.to(device), index=0)
-    attribution_edges = explanation.edge_mask.tolist()
     
+    explanation = gnn_explainer(test_interaction.x.to(device), test_interaction.edge_index.to(device), batch = batch, edge_weight = edge_weight_to_pass, target=None, index=0)
+    attribution_edges = explanation.edge_mask.tolist() 
+    
+    # print("Attributions for edges: ", attribution_edges)
+    # import sys
+    # sys.exit()
     #plotting
     num_bonds = test_interaction.networkx_graph.number_of_edges()
     rdkit_bonds_phi = [0]*num_bonds
