@@ -1,6 +1,6 @@
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white) 
 
-# Predicting affinities from simplistic protein-ligand interaction representations – what do graph neural networks learn?
+# Learning characteristics of graph neural networks predicting protein-ligand affinities
 
 This repository contains the code for the work on protein-ligand interaction with GNNs, in which we investigate what GNNs learn by using explainable AI (XAI).
 
@@ -65,6 +65,8 @@ A possible top-k edges (k=25) output image may look as:
 <p align="center">
   <img src="results/explanations/GC_GNN/high affinity/5lwe/5lwe_EdgeSHAPer_top_25_edges_full_graph.png" alt="top-k edges for an example complex" width=45%>
 </p>
+
+The folder ```additional_scripts``` contains scripts for additional experiments and computations. A README file is provided in the folder with instructions.
 
 ### Contacts
 
