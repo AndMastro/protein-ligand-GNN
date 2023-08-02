@@ -1,0 +1,1 @@
+This folder contains scripts used for additional experiments/control and for plotting. Move them in the root folder to run them.
