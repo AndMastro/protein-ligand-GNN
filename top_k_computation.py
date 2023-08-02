@@ -29,7 +29,7 @@ PLOT = args["top_k_computation"]["PLOT"]
 EXPLANATIONS_FOLDER = args["top_k_computation"]["EXPLANATIONS_FOLDER"]
 
 TOP_K_VALUES = args["top_k_computation"]["TOP_K_VALUES"]
-
+NODE_LABELS = args["top_k_computation"]["NODE_LABELS"]
 
 AFFINITY_GROUPS = ["low affinity", "medium affinity", "high affinity"]
 
@@ -288,7 +288,7 @@ for affinity_group in AFFINITY_GROUPS:
                 plt.figure(figsize=(10,10))
                 pos = nx.spring_layout(G)
 
-                nx.draw(G, pos=pos, with_labels=True, font_weight='bold', labels=nx.get_node_attributes(G, 'atom_type'), node_color=colors,edge_color=edges_colors, width=edges_widths, edge_cmap=plt.cm.bwr)   
+                nx.draw(G, pos=pos, node_size = 400, with_labels=NODE_LABELS, font_weight='bold', labels=nx.get_node_attributes(G, 'atom_type'), node_color=colors,edge_color=edges_colors, width=edges_widths, edge_cmap=plt.cm.bwr)   
 
                 plt.savefig(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_EdgeSHAPer_top_" + str(top_k_t) + "_edges_full_graph.png", dpi=300)
                 
@@ -328,12 +328,12 @@ for affinity_group in AFFINITY_GROUPS:
                     f.write("Number of relevant edges connecting protein and ligand pseudo-atoms: " + str(num_edge_in_between) + "\n")
                     f.write("% w.r.t. total number of relevant edges: " + str(round((num_edge_in_between/num_total_top_abs_edges)*100, 1)) + "%\n\n")
                     
-        
+                num_total_top_abs_edges = num_edge_in_protein + num_edge_in_ligand + num_edge_in_between
                 num_relevant_edge_in_protein_list[top_k_t].append(num_edge_in_protein)
                 num_relevant_edge_in_ligand_list[top_k_t].append(num_edge_in_ligand)
                 num_relevant_edge_in_between_list[top_k_t].append(num_edge_in_between)
                 num_total_relevant_edges_list[top_k_t].append(num_total_top_abs_edges)
-
+                # print("num_edge_in_protein: " + str(num_total_top_abs_edges))
     
     with open(directory + "/statistics_top_k_edges.txt", "w+") as f:
         f.write("Top k edges statistics\n\n")
@@ -346,8 +346,14 @@ for affinity_group in AFFINITY_GROUPS:
            
             f.write("Avg number of relevant edges in protein: " +  str(round(np.mean(num_relevant_edge_in_protein_list[top_k_t]), 3)) + "\n")
             f.write("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_protein_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n")
+            #same % w.r.t. total number of relevant edges above but without rounding
+            print("% w.r.t. total number of relevant edges: " + str((np.mean(num_relevant_edge_in_protein_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100) + "%\n")
             f.write("Avg number of relevant edges in ligand: " +  str(round(np.mean(num_relevant_edge_in_ligand_list[top_k_t]), 3)) + "\n")
             f.write("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_ligand_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n")
+            #same % w.r.t. total number of relevant edges above but without rounding
+            print("% w.r.t. total number of relevant edges: " + str((np.mean(num_relevant_edge_in_ligand_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100) + "%\n")
             f.write("Avg number of relevant edges in interaction: " + str(round(np.mean(num_relevant_edge_in_between_list[top_k_t]), 3)) + "\n")
             f.write("% w.r.t. total number of relevant edges: " + str(round((np.mean(num_relevant_edge_in_between_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100, 1)) + "%\n\n")
+            # same % w.r.t. total number of relevant edges above but without rounding
+            print("% w.r.t. total number of relevant edges: " + str((np.mean(num_relevant_edge_in_between_list[top_k_t])/np.mean(num_total_relevant_edges_list[top_k_t]))*100) + "%\n\n")
 
