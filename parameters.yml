@@ -13,7 +13,7 @@ trainer:
   MEAN_UPPER_BOUND: 7.5
   LOW_BOUND: 6
   HIGH_BOUND: 8
-  GNN_MODEL: "GAT" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
+  GNN_MODEL: "GCN" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
   EDGE_WEIGHT: True
   SCALING: True
   SEED: 42
@@ -25,38 +25,11 @@ trainer:
 
 explainer:
   DATA_PATH: "data/" #data location
-  SAVE_FOLDER: 'results/additional_experiments/pgexplainer_explanations/' #folder where explanations will be saved
+  SAVE_FOLDER: 'results/explanations/' #folder where explanations will be saved
   MODEL_PATH: 'models/pretrained_models/model_GCN_best_92.ckpt' #model to use for the explanation phase
   GNN_MODEL: "GCN" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
   SAMPLES_TO_EXPLAIN: 20 #number of test samples to explain
-  AFFINITY_SET: "high" #affinity set for which to perform the explanations (low, medium, high)
-  HIDDEN_CHANNELS: 256
-  BATCH_SIZE: 32
-  EPOCHS: 100
-  SEED: 42
-  CLEAN_DATA: True
-  MIN_AFFINITY: 5
-  MAX_AFFINITY: 11
-  MEAN_LOWER_BOUND: 6.5
-  MEAN_UPPER_BOUND: 7.5
-  LOW_BOUND: 6
-  HIGH_BOUND: 8
-  EDGE_WEIGHT: True #NOTE: If set to True, this has no effect with GraphSAGE and GIN since they do not support edge weights
-  SCALING: True
-  SEED: 42
-  HIDDEN_CHANNELS: 256
-  EPOCHS: 100
-  LEARNING_RATE: 1e-3
-  WEIGHT_DECAY: 5e-4
-  NODE_FEATURES: True
-
-gnn_explainer:
-  DATA_PATH: "data/" #data location
-  SAVE_FOLDER: 'results/additional_experiments/gnn_explainer_explanations/' #folder where explanations will be saved
-  MODEL_PATH: 'models/pretrained_models/model_GraphSAGE_best_71.ckpt' #model to use for the explanation phase
-  GNN_MODEL: "GraphSAGE" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
-  SAMPLES_TO_EXPLAIN: 20 #number of test samples to explain
-  AFFINITY_SET: "high" #affinity set for which to perform the explanations (low, medium, high)
+  AFFINITY_SET: "low" #affinity set for which to perform the explanations (low, medium, high)
   HIDDEN_CHANNELS: 256
   BATCH_SIZE: 32
   EPOCHS: 100
@@ -80,8 +53,13 @@ gnn_explainer:
 top_k_computation:
   DATA_PATH: "data/" #data location
   PLOT: True #if to save top_k graph images
-  EXPLANATIONS_FOLDER: "results/additional_experiments/pgexplainer_explanations/GraphSAGE/" #folder where the explanations computed with explainer_script.py are
+  EXPLANATIONS_FOLDER: "results/explanations/GraphSAGE/" #folder where the explanations computed with explainer_script.py are
   TOP_K_VALUES: [5,10,15,20,25] #values for the top-k edges computation
+  NODE_LABELS: True #if to show node labels in the top-k graph images
+
+
+
+#parameters for additional scripts
 
 statistics:
   DATA_PATH: "data/" #data location
@@ -94,7 +72,6 @@ statistics:
   LOW_BOUND: 6
   HIGH_BOUND: 8
   CLEAN_DATA: True
-
 
 affinity_shifting:
   DATA_PATH: "data/" #data location
@@ -119,4 +96,31 @@ affinity_shifting:
   LEARNING_RATE: 1e-3
   WEIGHT_DECAY: 5e-4
   NODE_FEATURES: True
-  AFFINITY_SHIFT: 0.5  
+  AFFINITY_SHIFT: 0.5
+
+gnn_explainer:
+  DATA_PATH: "data/" #data location
+  SAVE_FOLDER: 'results/additional_experiments/gnn_explainer_explanations/' #folder where explanations will be saved
+  MODEL_PATH: 'models/pretrained_models/model_GraphSAGE_best_71.ckpt' #model to use for the explanation phase
+  GNN_MODEL: "GraphSAGE" # "GC_GNN" "GCN" "GAT" "GIN" "GINE" "GraphSAGE"
+  SAMPLES_TO_EXPLAIN: 20 #number of test samples to explain
+  AFFINITY_SET: "low" #affinity set for which to perform the explanations (low, medium, high)
+  HIDDEN_CHANNELS: 256
+  BATCH_SIZE: 32
+  EPOCHS: 100
+  SEED: 42
+  CLEAN_DATA: True
+  MIN_AFFINITY: 5
+  MAX_AFFINITY: 11
+  MEAN_LOWER_BOUND: 6.5
+  MEAN_UPPER_BOUND: 7.5
+  LOW_BOUND: 6
+  HIGH_BOUND: 8
+  EDGE_WEIGHT: True #NOTE: If set to True, this has no effect with GraphSAGE and GIN since they do not support edge weights
+  SCALING: True
+  SEED: 42
+  HIDDEN_CHANNELS: 256
+  EPOCHS: 100
+  LEARNING_RATE: 1e-3
+  WEIGHT_DECAY: 5e-4
+  NODE_FEATURES: True  
