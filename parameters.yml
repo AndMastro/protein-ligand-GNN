@@ -55,7 +55,8 @@ top_k_computation:
   PLOT: True #if to save top_k graph images
   EXPLANATIONS_FOLDER: "results/explanations/GraphSAGE/" #folder where the explanations computed with explainer_script.py are
   TOP_K_VALUES: [5,10,15,20,25] #values for the top-k edges computation
-  NODE_LABELS: True #if to show node labels in the top-k graph images
+  NODE_LABELS: False #if to show node labels in the top-k graph images
+  IMAGE_FORMAT: "svg" #image format for the top-k graph images
 
 
 

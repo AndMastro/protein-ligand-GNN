@@ -30,6 +30,7 @@ EXPLANATIONS_FOLDER = args["top_k_computation"]["EXPLANATIONS_FOLDER"]
 
 TOP_K_VALUES = args["top_k_computation"]["TOP_K_VALUES"]
 NODE_LABELS = args["top_k_computation"]["NODE_LABELS"]
+IMAGE_FORMAT = args["top_k_computation"]["IMAGE_FORMAT"]
 
 AFFINITY_GROUPS = ["low affinity", "medium affinity", "high affinity"]
 
@@ -290,7 +291,7 @@ for affinity_group in AFFINITY_GROUPS:
 
                 nx.draw(G, pos=pos, node_size = 400, with_labels=NODE_LABELS, font_weight='bold', labels=nx.get_node_attributes(G, 'atom_type'), node_color=colors,edge_color=edges_colors, width=edges_widths, edge_cmap=plt.cm.bwr)   
 
-                plt.savefig(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_EdgeSHAPer_top_" + str(top_k_t) + "_edges_full_graph.png", dpi=300)
+                plt.savefig(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_EdgeSHAPer_top_" + str(top_k_t) + "_edges_full_graph." + IMAGE_FORMAT, dpi=300)
                 
                 plt.close()
 
@@ -298,9 +299,9 @@ for affinity_group in AFFINITY_GROUPS:
                 if top_k_t == 25:
                     plt.figure(figsize=(10,10))
                     
-                    nx.draw(G, pos=pos, with_labels=True, font_weight='bold', labels=nx.get_node_attributes(G, 'atom_type'), node_color=colors)
+                    nx.draw(G, pos=pos, with_labels=NODE_LABELS, font_weight='bold', labels=nx.get_node_attributes(G, 'atom_type'), node_color=colors)
                     
-                    plt.savefig(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_full_interaction_graph.png", dpi=300)
+                    plt.savefig(directory + test_interaction_name + "/" + test_interaction.interaction_name + "_full_interaction_graph." + IMAGE_FORMAT, dpi=300)
                     
                     plt.close()
                 
