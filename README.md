@@ -71,3 +71,10 @@ The folder ```additional_scripts``` contains scripts for additional experiments 
 ### Contacts
 
 For any questions, feel free to drop an [email](mailto:mastropietro@diag.uniroma1.it).
+
+## Citations
+
+If you use our work or results, please cite our publication in Nature Machine Intelligence 🧠
+
+Mastropietro, A., Pasculli, G. & Bajorath, J. [Learning characteristics of graph neural networks predicting protein–ligand affinities](https://rdcu.be/dqZlS
+). Nat Mach Intell (2023). https://doi.org/10.1038/s42256-023-00756-9 
