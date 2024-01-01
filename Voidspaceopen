@@ -1,0 +1,8 @@
+pip install Pytorch
+pip install PyLance
+import package beautifulsoup4
+import package numpy
+open text files from user_input while user_input=True
+print(f.user_input)
+pip.install devson.pkg
+conda env create f.environment.ylm
